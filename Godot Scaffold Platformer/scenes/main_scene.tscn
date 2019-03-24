@@ -1,0 +1,85 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://assets/tileset/walls.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/tileset/platforms.tres" type="TileSet" id=2]
+[ext_resource path="res://assets/tileset/hazards.tres" type="TileSet" id=3]
+[ext_resource path="res://scripts/player_control.gd" type="Script" id=4]
+[ext_resource path="res://assets/sprites/player_1.png" type="Texture" id=5]
+[ext_resource path="res://assets/sprites/player_2.png" type="Texture" id=6]
+[ext_resource path="res://scripts/player_animation.gd" type="Script" id=7]
+[ext_resource path="res://scripts/player_wall_jump.gd" type="Script" id=8]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 60.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8, 8 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 8, 1 )
+
+[node name="Example Scene" type="Node2D"]
+
+[node name="Tiles" type="TileMap" parent="."]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 32 )
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( 32, 1, 0, 65568, 1, 0, 131104, 1, 0, 196640, 1, 0, 262176, 1, 0, 327707, 1, 0, 327709, 1, 0, 327712, 1, 0, 393243, 1, 0, 393245, 1, 0, 393248, 1, 0, 458779, 1, 0, 458781, 1, 0, 458784, 1, 0, 524315, 1, 0, 524317, 1, 0, 524320, 1, 0, 589851, 1, 0, 589853, 1, 0, 589856, 1, 0, 655369, 1, 0, 655392, 1, 0, 720928, 1, 0, 851968, 1, 0, 852000, 1, 0 )
+
+[node name="Platforms" type="TileMap" parent="."]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 32, 32 )
+collision_layer = 8
+collision_mask = 2
+format = 1
+
+[node name="Hazards" type="TileMap" parent="."]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 32, 32 )
+collision_layer = 4
+collision_mask = 2
+format = 1
+
+[node name="Player" type="KinematicBody2D" parent="."]
+position = Vector2( 531, 353 )
+collision_layer = 2
+collision_mask = 13
+script = ExtResource( 4 )
+x_acceleration = 30
+x_decceleration = 30
+jump_speed = 500
+
+[node name="Player Sprite" type="AnimatedSprite" parent="Player"]
+frames = SubResource( 1 )
+script = ExtResource( 7 )
+
+[node name="Player Collision Box" type="CollisionShape2D" parent="Player"]
+shape = SubResource( 2 )
+
+[node name="Main Camera" type="Camera2D" parent="Player"]
+current = true
+limit_bottom = 1000
+limit_smoothed = true
+smoothing_enabled = true
+drag_margin_left = 0.0
+drag_margin_top = 0.0
+drag_margin_right = 0.0
+drag_margin_bottom = 0.0
+
+[node name="Face" type="Area2D" parent="Player"]
+editor/display_folded = true
+collision_layer = 2
+script = ExtResource( 8 )
+
+[node name="Face Box" type="CollisionShape2D" parent="Player/Face"]
+position = Vector2( 8, 0 )
+rotation = 1.5708
+shape = SubResource( 3 )
+one_way_collision = true
+
