@@ -1,13 +1,12 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://assets/tileset/walls.tres" type="TileSet" id=1]
-[ext_resource path="res://assets/tileset/platforms.tres" type="TileSet" id=2]
-[ext_resource path="res://assets/tileset/hazards.tres" type="TileSet" id=3]
+[ext_resource path="res://assets/tilesets/walls.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/tilesets/platforms.tres" type="TileSet" id=2]
+[ext_resource path="res://assets/tilesets/hazards.tres" type="TileSet" id=3]
 [ext_resource path="res://scripts/player_control.gd" type="Script" id=4]
 [ext_resource path="res://assets/sprites/player_1.png" type="Texture" id=5]
 [ext_resource path="res://assets/sprites/player_2.png" type="Texture" id=6]
 [ext_resource path="res://scripts/player_animation.gd" type="Script" id=7]
-[ext_resource path="res://scripts/player_wall_jump.gd" type="Script" id=8]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -23,7 +22,7 @@ extents = Vector2( 8, 8 )
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 8, 1 )
 
-[node name="Example Scene" type="Node2D"]
+[node name="Main Scene" type="Node2D"]
 
 [node name="Tiles" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
@@ -53,7 +52,6 @@ collision_mask = 13
 script = ExtResource( 4 )
 x_acceleration = 30
 x_decceleration = 30
-jump_speed = 500
 
 [node name="Player Sprite" type="AnimatedSprite" parent="Player"]
 frames = SubResource( 1 )
@@ -73,9 +71,7 @@ drag_margin_right = 0.0
 drag_margin_bottom = 0.0
 
 [node name="Face" type="Area2D" parent="Player"]
-editor/display_folded = true
 collision_layer = 2
-script = ExtResource( 8 )
 
 [node name="Face Box" type="CollisionShape2D" parent="Player/Face"]
 position = Vector2( 8, 0 )
@@ -83,3 +79,5 @@ rotation = 1.5708
 shape = SubResource( 3 )
 one_way_collision = true
 
+[connection signal="body_entered" from="Player/Face" to="Player" method="_on_wall"]
+[connection signal="body_exited" from="Player/Face" to="Player" method="_off_wall"]
