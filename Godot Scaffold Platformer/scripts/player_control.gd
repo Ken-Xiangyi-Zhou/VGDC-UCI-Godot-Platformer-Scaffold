@@ -5,7 +5,7 @@ extends KinematicBody2D
 #	especially when using tiles. The player object often bounces on the floor because of the jagged edges
 #	of tiles. That's why it's better to write everything out.
 
-export var gravity: float = 2000.0			#Use "export" to create script variables
+export var gravity: float = 2000.0			#Use "export" to create script variables. Gravity is gravity.
 export var x_acceleration: int = 20			#Acceleration of player. Use for slow startups.
 export var x_decceleration: int = 20		#Decceleration of player. Use for sliding.
 export var max_speed: float = 500.0			#Maximum speed of the player.
@@ -13,11 +13,12 @@ export var jump_speed: float = 600.0		#Alters jump height.
 export var can_wall_jump: bool = true		#Allows wall jumping.
 export var phantom_jump_frames: int = 3		#Time you can still jump after walking off ground. 0 disables it.
 
+enum direction {LEFT, RIGHT, NONE}			#Enum for where player is buffering input.
+
 var velocity = Vector2()					#Velocity of the player object to move next frame.
 var last_touched_ground: int = 0			#Number of frames ago ground was touched.
-enum direction {LEFT, RIGHT, NONE}			#Direction enum
-var turn_state = direction.NONE				#Where player is facing
-var is_on_wall: bool = false				#Whether this node is on a wall
+var turn_state = direction.NONE				#What direction player should move.
+var is_on_wall: bool = false				#Whether this node is on a wall.
 
 #Below variable is created when scene is ready. It represents the collider "Face Box" on "Face".
 onready var collider_node = get_node("Face/Face Box")
@@ -65,7 +66,7 @@ func move(delta):							#Controls movement.
 		jump(jump_speed)
 		last_touched_ground = phantom_jump_frames + 1
 	if press_down() and is_on_floor() and get_slide_collision(0).collider.collision_layer == 8:
-		position.y += 1						#The above allows ducking through platforms.
+		position.y += 1						#The allows ducking through platforms.
 	match turn_state:
 		direction.LEFT:
 			accelerate_x(-x_acceleration)
@@ -76,23 +77,22 @@ func move(delta):							#Controls movement.
 		_:
 			pass
 	turn_face_box()
-	if is_on_wall == true:					#Checks if player should wall-jump.
-		if press_up() and not is_on_floor():
+	if is_on_wall == true:					#Checks if player tried to wall-jump and jumps if player can.
+		if press_up() and not is_on_floor() and can_wall_jump:
 			wall_jump()
 
-func wall_jump():							#Check if the settings allow for wall jumping, then jump under
-	if can_wall_jump:						#	the right conditions:
-		match turn_state:
-			direction.RIGHT:
-				velocity.x = -max_speed
-				turn_state = direction.LEFT
-				jump(jump_speed)
-			direction.LEFT:
-				velocity.x = max_speed
-				turn_state = direction.RIGHT
-				jump(jump_speed)
-			_:
-				pass
+func wall_jump():							#Performs a wall-jump.
+	match turn_state:
+		direction.RIGHT:
+			velocity.x = -max_speed
+			turn_state = direction.LEFT
+			jump(jump_speed)
+		direction.LEFT:
+			velocity.x = max_speed
+			turn_state = direction.RIGHT
+			jump(jump_speed)
+		_:
+			pass
 
 func record_last_touched_ground():			#Records the last time the player touched the ground. This is
 	if is_on_floor():						#	used for the phantom jump only and can be deleted if you do
@@ -169,7 +169,7 @@ func input_up():
 	return Input.is_action_pressed("up")
 
 func input_down():
-	Input.is_action_pressed("down")
+	return Input.is_action_pressed("down")
 
 func press_left():							#Detects button press in specified direction.
 	return Input.is_action_just_pressed("left")
@@ -193,4 +193,4 @@ func release_up():
 	return Input.is_action_just_released("up")
 
 func release_down():
-	Input.is_action_just_released("down")
+	return Input.is_action_just_released("down")
