@@ -30,12 +30,8 @@ func _process(delta):						#_process is called by the engine once every "frame",
 
 func _physics_process(delta):				#Unlike _process, Godot makes sure physics stuff is ready to be
 	change_turn_state()						#	used before calling _physics_process.
-	move_x()
-	if is_on_wall == true:					#Checks if player should wall-jump.
-		if press_up() and not is_on_floor():
-			wall_jump()
 	record_last_touched_ground()
-	move_y(delta)							#Previous functions edit the velocity of the player object.
+	move(delta)								#Previous functions edit the velocity of the player object.
 	move_and_slide(velocity, Vector2(0, -1))#	move_and_slide actually moves the object.
 
 #The functions below are called by _process and _physics_process.
@@ -62,7 +58,14 @@ func is_dead():								#Death conditions can be set here.
 func die_and_respawn(x, y):					#Currently resets scene.
 	get_tree().reload_current_scene()
 
-func move_x():								#Controls basic x-axis movement.
+func move(delta):							#Controls movement.
+	stop_if_collided()
+	velocity.y += delta * gravity
+	if press_up() and (is_on_floor() or can_phantom()):
+		jump(jump_speed)
+		last_touched_ground = phantom_jump_frames + 1
+	if press_down() and is_on_floor() and get_slide_collision(0).collider.collision_layer == 8:
+		position.y += 1						#The above allows ducking through platforms.
 	match turn_state:
 		direction.LEFT:
 			accelerate_x(-x_acceleration)
@@ -72,19 +75,10 @@ func move_x():								#Controls basic x-axis movement.
 			deccelerate_x(x_decceleration)
 		_:
 			pass
-	if is_on_wall():
-		stop_x()
 	turn_face_box()
-
-func move_y(delta):							#Controls basic y-axis movement.
-	if is_on_floor() or is_on_ceiling():
-		stop_y()
-	velocity.y += delta * gravity
-	if press_up() and (is_on_floor() or can_phantom()):
-		jump(jump_speed)
-		last_touched_ground = phantom_jump_frames + 1
-	if press_down() and is_on_floor() and get_slide_collision(0).collider.collision_layer == 8:
-		position.y += 1
+	if is_on_wall == true:					#Checks if player should wall-jump.
+		if press_up() and not is_on_floor():
+			wall_jump()
 
 func wall_jump():							#Check if the settings allow for wall jumping, then jump under
 	if can_wall_jump:						#	the right conditions:
@@ -109,6 +103,12 @@ func record_last_touched_ground():			#Records the last time the player touched t
 #The functions below are not called by _process or _physics_process, but the functions called in _physics_process
 #	rely on these.
 
+func stop_if_collided():						#Stops movement if collided with object.
+	if is_on_floor() or is_on_ceiling():
+		stop_y()
+	if is_on_wall():
+		stop_x()
+
 func turn_face_box():						#Moves the "Face Box" node to be on the face, even after turning.
 	if turn_state == direction.RIGHT:
 		collider_node.position.x =  abs(collider_node.position.x)
@@ -119,7 +119,7 @@ func turn_face_box():						#Moves the "Face Box" node to be on the face, even af
 
 func _on_wall(body):						#Called when a wall enters this object. See Node tab of Face.
 	if body.get_name() == "Tiles":
-		is_on_wall = true
+		is_on_wall = true					#There's a method with this name, but this is a property, so no overwrite.
 
 func _off_wall(body):						#Called when a wall exits this object. See Node tab of Face.
 	if body.get_name() == "Tiles":
