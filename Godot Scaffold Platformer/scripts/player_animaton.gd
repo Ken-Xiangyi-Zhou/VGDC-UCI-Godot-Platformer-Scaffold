@@ -1,5 +1,7 @@
 extends AnimationPlayer
 
+#This script changes the current animation of the player sprite. There's just blinking right now.
+
 func _ready():							#Called when the node enters the scene tree for the first time.
 	set_autoplay("Idle")
 
