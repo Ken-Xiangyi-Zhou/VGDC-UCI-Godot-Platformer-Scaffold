@@ -74,8 +74,6 @@ func move(delta):							#Controls movement.
 			accelerate_x( x_acceleration)
 		direction.NONE:
 			deccelerate_x(x_decceleration)
-		_:
-			pass
 	turn_face_box()
 	if is_on_wall == true:					#Checks if player tried to wall-jump and jumps if player can.
 		if press_up() and not is_on_floor() and can_wall_jump:
@@ -91,8 +89,6 @@ func wall_jump():							#Performs a wall-jump.
 			velocity.x = max_speed
 			turn_state = direction.RIGHT
 			jump(jump_speed)
-		_:
-			pass
 
 func record_last_touched_ground():			#Records the last time the player touched the ground. This is
 	if is_on_floor():						#	used for the phantom jump only and can be deleted if you do

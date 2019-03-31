@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://assets/tilesets/walls.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/tilesets/platforms.tres" type="TileSet" id=2]
@@ -6,7 +6,8 @@
 [ext_resource path="res://scripts/player_control.gd" type="Script" id=4]
 [ext_resource path="res://assets/sprites/player_1.png" type="Texture" id=5]
 [ext_resource path="res://assets/sprites/player_2.png" type="Texture" id=6]
-[ext_resource path="res://scripts/player_animation.gd" type="Script" id=7]
+[ext_resource path="res://scripts/player_sprite_direction.gd" type="Script" id=7]
+[ext_resource path="res://scripts/player_animaton.gd" type="Script" id=8]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -16,10 +17,42 @@ animations = [ {
 "speed": 60.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="Animation" id=2]
+resource_name = "Blink"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 1 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 0, 0 ]
+}
+
+[sub_resource type="RectangleShape2D" id=4]
 extents = Vector2( 8, 8 )
 
-[sub_resource type="RectangleShape2D" id=3]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 8, 1 )
 
 [node name="Example Scene" type="Node2D"]
@@ -59,8 +92,13 @@ x_decceleration = 30
 frames = SubResource( 1 )
 script = ExtResource( 7 )
 
+[node name="Player Animator" type="AnimationPlayer" parent="Player/Player Sprite"]
+anims/Blink = SubResource( 2 )
+anims/Idle = SubResource( 3 )
+script = ExtResource( 8 )
+
 [node name="Player Collision Box" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 2 )
+shape = SubResource( 4 )
 
 [node name="Main Camera" type="Camera2D" parent="Player"]
 current = true
@@ -78,7 +116,7 @@ collision_layer = 2
 [node name="Face Box" type="CollisionShape2D" parent="Player/Face"]
 position = Vector2( 8, 0 )
 rotation = 1.5708
-shape = SubResource( 3 )
+shape = SubResource( 5 )
 one_way_collision = true
 
 [connection signal="body_entered" from="Player/Face" to="Player" method="_on_wall"]
