@@ -27,7 +27,7 @@ onready var collider_node = get_node("Face/Face Box")
 
 func _process(delta):						#_process is called by the engine once every "frame", default 60 fps.
 	if is_dead():
-		die_and_respawn(500, 0)
+		die_and_respawn()
 
 func _physics_process(delta):				#Unlike _process, Godot makes sure physics stuff is ready to be
 	change_turn_state()						#	used before calling _physics_process.
@@ -56,7 +56,7 @@ func is_dead():								#Death conditions can be set here.
 		return get_position().y > 1010 or get_slide_collision(0).collider.collision_layer == 4
 	return get_position().y > 1010
 
-func die_and_respawn(x, y):					#Currently resets scene.
+func die_and_respawn():					#Currently resets scene.
 	get_tree().reload_current_scene()
 
 func move(delta):							#Controls movement.
