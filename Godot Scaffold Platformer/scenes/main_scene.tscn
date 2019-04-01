@@ -1,123 +1,17 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://assets/tilesets/walls.tres" type="TileSet" id=1]
-[ext_resource path="res://assets/tilesets/platforms.tres" type="TileSet" id=2]
-[ext_resource path="res://assets/tilesets/hazards.tres" type="TileSet" id=3]
-[ext_resource path="res://scripts/player_control.gd" type="Script" id=4]
-[ext_resource path="res://assets/sprites/player_1.png" type="Texture" id=5]
-[ext_resource path="res://assets/sprites/player_2.png" type="Texture" id=6]
-[ext_resource path="res://scripts/player_sprite_direction.gd" type="Script" id=7]
-[ext_resource path="res://scripts/player_animaton.gd" type="Script" id=8]
-
-[sub_resource type="SpriteFrames" id=1]
-animations = [ {
-"frames": [ ExtResource( 5 ), ExtResource( 6 ) ],
-"loop": true,
-"name": "default",
-"speed": 60.0
-} ]
-
-[sub_resource type="Animation" id=2]
-resource_name = "Blink"
-length = 0.1
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 1 ]
-}
-
-[sub_resource type="Animation" id=3]
-resource_name = "Idle"
-length = 0.1
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0 ),
-"transitions": PoolRealArray( 1 ),
-"update": 1,
-"values": [ 0 ]
-}
-
-[sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 8, 8 )
-
-[sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 8, 1 )
+[ext_resource path="res://prefabs/Tiles.tscn" type="PackedScene" id=1]
+[ext_resource path="res://prefabs/Platforms.tscn" type="PackedScene" id=2]
+[ext_resource path="res://prefabs/Hazards.tscn" type="PackedScene" id=3]
+[ext_resource path="res://prefabs/Player.tscn" type="PackedScene" id=4]
 
 [node name="Main Scene" type="Node2D"]
 
-[node name="Tiles" type="TileMap" parent="."]
-tile_set = ExtResource( 1 )
-cell_size = Vector2( 32, 32 )
-collision_mask = 0
-format = 1
-tile_data = PoolIntArray( 32, 1, 0, 65568, 1, 0, 131104, 1, 0, 196640, 1, 0, 262176, 1, 0, 327707, 1, 0, 327709, 1, 0, 327712, 1, 0, 393243, 1, 0, 393245, 1, 0, 393248, 1, 0, 458779, 1, 0, 458781, 1, 0, 458784, 1, 0, 524315, 1, 0, 524317, 1, 0, 524320, 1, 0, 589851, 1, 0, 589853, 1, 0, 589856, 1, 0, 655369, 1, 0, 655392, 1, 0, 720928, 1, 0, 851968, 1, 0, 852000, 1, 0 )
+[node name="Tiles" parent="." instance=ExtResource( 1 )]
 
-[node name="Platforms" type="TileMap" parent="."]
-tile_set = ExtResource( 2 )
-cell_size = Vector2( 32, 32 )
-collision_layer = 8
-collision_mask = 2
-format = 1
+[node name="Platforms" parent="." instance=ExtResource( 2 )]
 
-[node name="Hazards" type="TileMap" parent="."]
-tile_set = ExtResource( 3 )
-cell_size = Vector2( 32, 32 )
-collision_layer = 4
-collision_mask = 2
-format = 1
+[node name="Hazards" parent="." instance=ExtResource( 3 )]
 
-[node name="Player" type="KinematicBody2D" parent="."]
-position = Vector2( 512, 300 )
-collision_layer = 2
-collision_mask = 13
-script = ExtResource( 4 )
-x_acceleration = 30
-x_decceleration = 30
+[node name="Player" parent="." instance=ExtResource( 4 )]
 
-[node name="Player Sprite" type="AnimatedSprite" parent="Player"]
-editor/display_folded = true
-frames = SubResource( 1 )
-script = ExtResource( 7 )
-
-[node name="Player Animator" type="AnimationPlayer" parent="Player/Player Sprite"]
-anims/Blink = SubResource( 2 )
-anims/Idle = SubResource( 3 )
-script = ExtResource( 8 )
-
-[node name="Player Collision Box" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 4 )
-
-[node name="Main Camera" type="Camera2D" parent="Player"]
-current = true
-limit_bottom = 1000
-limit_smoothed = true
-smoothing_enabled = true
-drag_margin_left = 0.0
-drag_margin_top = 0.0
-drag_margin_right = 0.0
-drag_margin_bottom = 0.0
-
-[node name="Face" type="Area2D" parent="Player"]
-editor/display_folded = true
-collision_layer = 2
-
-[node name="Face Box" type="CollisionShape2D" parent="Player/Face"]
-position = Vector2( 8, 0 )
-rotation = 1.5708
-shape = SubResource( 5 )
-one_way_collision = true
-
-[connection signal="body_entered" from="Player/Face" to="Player" method="_on_wall"]
-[connection signal="body_exited" from="Player/Face" to="Player" method="_off_wall"]
