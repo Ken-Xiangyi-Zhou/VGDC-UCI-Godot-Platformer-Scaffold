@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/tilesets/hazards.tres" type="TileSet" id=1]
+
+[node name="Hazards" type="TileMap"]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 32, 32 )
+collision_layer = 4
+collision_mask = 2
+format = 1
+

@@ -1,1 +1,0 @@
-Use the example scene to see how things work. The tileset scene is for making new tiles. You can compile the scene into a tileset by going to Scene -> Convert to… -> Tileset…. You'll then have to select a folder to safe the tileset in. I suggest you navigate to assets -> tileset and overwrite tiles.tres. This will make the scene automatically read from the new tileset.
