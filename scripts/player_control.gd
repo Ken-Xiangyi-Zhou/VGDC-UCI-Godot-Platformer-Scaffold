@@ -6,8 +6,8 @@ extends KinematicBody2D
 #	of tiles. That's why it's better to write everything out.
 
 export var gravity: float = 2000.0			#Use "export" to create script variables. Gravity is gravity.
-export var x_acceleration: int = 20			#Acceleration of player. Use for slow startups.
-export var x_decceleration: int = 20		#Decceleration of player. Use for sliding.
+export var x_acceleration: int = 30			#Acceleration of player. Use for slow startups.
+export var x_decceleration: int = 30		#Decceleration of player. Use for sliding.
 export var max_speed: float = 500.0			#Maximum speed of the player.
 export var jump_speed: float = 600.0		#Alters jump height.
 export var can_wall_jump: bool = true		#Allows wall jumping.

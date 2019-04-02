@@ -105,8 +105,6 @@ position = Vector2( 535.987, 417.635 )
 collision_layer = 2
 collision_mask = 13
 script = ExtResource( 4 )
-x_acceleration = 30
-x_decceleration = 30
 
 [node name="Player Sprite" type="AnimatedSprite" parent="Player"]
 editor/display_folded = true
