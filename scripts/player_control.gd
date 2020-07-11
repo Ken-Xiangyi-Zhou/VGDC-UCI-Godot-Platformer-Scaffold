@@ -11,7 +11,7 @@ export var x_decceleration: int = 30		#Decceleration of player. Use for sliding.
 export var max_speed: float = 500.0			#Maximum speed of the player.
 export var jump_speed: float = 600.0		#Alters jump height.
 export var can_wall_jump: bool = true		#Allows wall jumping.
-export var phantom_jump_frames: int = 3		#Time you can still jump after walking off ground. 0 disables it.
+export var coyote_time: int = 3				#Time you can still jump after walking off ground. 0 disables it.
 
 enum direction {LEFT, RIGHT, NONE}			#Enum for where player is buffering input.
 
@@ -68,7 +68,7 @@ func move(delta):							#Controls movement.
 	velocity.y += delta * gravity
 	if press_up() and (is_on_floor() or can_phantom()):
 		jump(jump_speed)
-		last_touched_ground = phantom_jump_frames + 1
+		last_touched_ground = coyote_time + 1
 	if press_down() and is_on_floor() and get_slide_collision(0).collider.collision_layer == 8:
 		position.y += 1						#The allows ducking through platforms.
 	match turn_state:
@@ -155,7 +155,7 @@ func bounce_y():							#Reverses y velocity.
 	velocity.y = -velocity.y
 
 func can_phantom():							#Checks if player can phantom jump.
-	return last_touched_ground <= phantom_jump_frames
+	return last_touched_ground <= coyote_time
 
 #Generic input functions that can go in any file.
 
